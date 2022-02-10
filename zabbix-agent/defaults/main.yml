@@ -1,0 +1,34 @@
+---
+zabbix_release: "4.4"
+zabbix_agent_version: "4.4.1"
+zabbix_create_config: true
+
+zabbix_agent_user: "zabbix"
+zabbix_agent_timeout: 3
+zabbix_agent_allowroot: 0
+
+zabbix_agent_unsafe_up: 0
+
+zabbix_agent_log_type: "file"
+zabbix_agent_log_path: /var/log/zabbix/zabbix_agentd.log
+zabbix_agent_log_size: 0
+zabbix_agent_debug_level: 3
+
+zabbix_agent_check_passive_enable: true
+zabbix_agent_check_passive_pn: 3
+zabbix_agent_check_active_enable: false
+zabbix_agent_check_active_refresh: 120
+zabbix_agent_check_active_bsend: 5
+zabbix_agent_check_active_bsize: 100
+zabbix_agent_check_active_lmax: 20
+
+zabbix_server_host: "localhost"
+zabbix_server_user: "ansible"
+zabbix_server_passwd: "My$up3RPaSSw0Rd"
+zabbix_server_host_manage: false
+
+zabbix_agent_port: 10050
+zabbix_agent_ip: "0.0.0.0"
+
+zabbix_agent_psk_enable: true
+zabbix_agent_psk_file: /etc/zabbix/zabbix_agentd.psk

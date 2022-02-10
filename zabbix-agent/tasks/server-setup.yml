@@ -1,0 +1,19 @@
+---
+- name: Create host on server.
+  zabbix_host:
+    server_url: https://{{ zabbix_server_host }}
+    login_user: "{{ zabbix_server_user }}"
+    login_password: "{{ zabbix_server_passwd }}"
+    force: yes
+    host_name: "{{ inventory_hostname }}"
+    visible_name: "{{ inventory_hostname_short }}"
+    host_groups: "{{ group_names }}"
+    status: enabled
+    state: present
+    interfaces:
+      - type: 1
+        useip: 0
+        dns: "{{ inventory_hostname }}"
+        port: "{{ zabbix_agent_port }}"
+        main: 1
+  delegate_to: localhost

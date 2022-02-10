@@ -1,0 +1,53 @@
+---
+- name: Remove zabbix-release package if exists.
+  yum:
+    name: zabbix-release
+    update_cache: yes
+    state: absent
+    autoremove: yes
+
+- name: Add Zabbix repository.
+  yum_repository:
+    name: zabbix
+    description: Zabbix Official Repository
+    file: zabbix
+    baseurl: http://repo.zabbix.com/zabbix/{{ zabbix_release }}/rhel/{{ ansible_facts['distribution_major_version'] }}/$basearch/
+    gpgkey: http://repo.zabbix.com/RPM-GPG-KEY-ZABBIX-A14FE591
+    enabled: no
+    gpgcheck: yes
+    state: present
+
+- name: Add Zabbix-Non-Supported repository.
+  yum_repository:
+    name: zabbix-non-supported
+    description: Zabbix Official Repository non-supported
+    file: zabbix
+    baseurl: http://repo.zabbix.com/non-supported/rhel/{{ ansible_facts['distribution_major_version'] }}/$basearch/
+    gpgkey: http://repo.zabbix.com/RPM-GPG-KEY-ZABBIX-A14FE591
+    enabled: no
+    gpgcheck: yes
+    state: present
+
+- name: Add Zabbix Official GPG key.
+  rpm_key:
+    key: http://repo.zabbix.com/RPM-GPG-KEY-ZABBIX-A14FE591
+    state: present
+  
+- name: Add Zabbix non-supported GPG key.
+  rpm_key:
+    key: http://repo.zabbix.com/RPM-GPG-KEY-ZABBIX
+    state: present
+
+- name: Clean YUM Cache.
+  shell: yum clean all
+
+- name: Install Zabbix-Agent.
+  yum:
+    name: zabbix-agent-{{ zabbix_agent_version }}
+    allow_downgrade: yes
+    update_cache: yes
+    enablerepo:
+      - zabbix
+      - zabbix-non-supported
+    state: present
+  notify: Restart Zabbix-Agent

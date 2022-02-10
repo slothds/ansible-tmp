@@ -1,0 +1,4 @@
+---
+- include: centos.yml
+  when:
+    - ansible_facts['distribution'] == "CentOS" or ansible_facts['distribution'] == "Sangoma"

@@ -1,0 +1,9 @@
+---
+- name: Create Zabbix-Agent configuration.
+  template:
+    src: zabbix-agent/zabbix_agentd.tmpl
+    dest: /etc/zabbix/zabbix_agentd.conf
+    owner: root
+    group: root
+    mode: 0644
+  notify: Restart Zabbix-Agent

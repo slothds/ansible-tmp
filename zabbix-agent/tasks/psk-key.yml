@@ -1,0 +1,28 @@
+---
+- name: Check if PSK alredy exists.
+  stat:
+    path: "{{ zabbix_agent_psk_file }}"
+  register: pfile
+
+- name: Generate PSK key.
+  shell: openssl rand -hex 32 >{{ zabbix_agent_psk_file }}
+  when: not pfile.stat.exists
+  notify: Restart Zabbix-Agent
+
+- name: Get PSK key.
+  shell: cat {{ zabbix_agent_psk_file }}
+  register: psk
+
+- name: Enable PSK on zabbix-server.
+  zabbix_host:
+    server_url: https://{{ zabbix_server_host }}
+    login_user: "{{ zabbix_server_user }}"
+    login_password: "{{ zabbix_server_passwd }}"
+    host_name: "{{ inventory_hostname }}"
+    visible_name: "{{ inventory_hostname_short }}"
+    tls_accept: 2
+    tls_connect: 2
+    tls_psk: "{{ psk.stdout }}"
+    tls_psk_identity: PSK-{{ inventory_hostname }}
+  delegate_to: localhost
+  when: zabbix_server_host_manage|bool

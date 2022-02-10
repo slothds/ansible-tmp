@@ -1,0 +1,19 @@
+---
+- include: centos.yml
+  when:
+    - ansible_facts['distribution'] == "CentOS" or ansible_facts['distribution'] == "Sangoma"
+
+- include: config.yml
+  when: zabbix_create_config|bool
+
+- include: server-setup.yml
+  when: zabbix_server_host_manage|bool
+
+- include: psk-key.yml
+  when: zabbix_agent_psk_enable|bool
+
+- name: Ensure Zabbix-Agent is started and enabled at boot.
+  service:
+    name: zabbix-agent
+    state: started
+    enabled: true

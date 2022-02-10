@@ -1,0 +1,33 @@
+---
+- name: YUM | Enable Epel repository.
+  yum:
+    name: epel-release
+    update_cache: yes
+    state: latest
+
+- name: YUM | Add NodeJS {{ nodejs_version|regex_replace('^([0-9]*)[0-9.]*$','\1') }} repository.
+  yum_repository:
+    name: nodejs_{{ nodejs_version|regex_replace('^([0-9]*)[0-9.]*$','\1') }}.x
+    description: Node.js Packages for Enterprise Linux {{ ansible_facts['distribution_major_version'] }}
+    file: nodejs
+    baseurl: https://rpm.nodesource.com/pub_{{ nodejs_version|regex_replace('^([0-9]*)[0-9.]*$','\1') }}.x/el/{{ ansible_facts['distribution_major_version'] }}/$basearch
+    gpgkey: http://rpm.nodesource.com/pub/el/NODESOURCE-GPG-SIGNING-KEY-EL
+    enabled: no
+    gpgcheck: yes
+    state: present
+
+- name: YUM | Import NodeJS repository GPG key.
+  rpm_key:
+    key: http://rpm.nodesource.com/pub/el/NODESOURCE-GPG-SIGNING-KEY-EL
+    state: present
+
+- name: YUM | Clean Cache.
+  shell: yum clean all
+
+- name: YUM | Install NodeJS v{{ nodejs_version }}.
+  yum:
+    name: nodejs-{{ nodejs_version }}
+    enablerepo:
+      - nodejs_{{ nodejs_version|regex_replace('^([0-9]*)[0-9.]*$','\1') }}.x
+    allow_downgrade: yes
+    update_cache: yes
